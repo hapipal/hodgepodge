@@ -1,0 +1,38 @@
+{
+  "name": "hodgepodge",
+  "version": "0.0.1",
+  "description": "Registering hapi plugins in order since 2015",
+  "main": "lib/index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "lab -a code -t 100 -L"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/devinivy/hodgepodge.git"
+  },
+  "keywords": [
+    "hapi",
+    "plugins",
+    "register",
+    "utility"
+  ],
+  "author": "Devin Ivy <devin@bigroomstudios.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/devinivy/hodgepodge/issues"
+  },
+  "homepage": "https://github.com/devinivy/hodgepodge#readme",
+  "dependencies": {
+    "topo": "~1.0.3"
+  },
+  "peerDependencies": {
+    "hapi": ">=8.3.0"
+  },
+  "devDependencies": {
+    "lab": "6.x.x",
+    "code": "1.x.x"
+  }
+}
