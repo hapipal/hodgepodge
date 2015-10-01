@@ -14,6 +14,13 @@ var expect = Code.expect;
 
 describe('Hodgepodge', function () {
 
+    // Plain plugin
+
+    var pluginPlain = function () {};
+    pluginPlain.attributes = {
+        name: 'plugin-plain'
+    };
+
     // Plugin A
 
     var pluginA = function () {};
@@ -28,13 +35,7 @@ describe('Hodgepodge', function () {
     var pluginB = function () {};
     pluginB.attributes = {
         name: 'plugin-b',
-        hodgepodge: true,
         dependencies: 'plugin-c'
-    };
-
-    pluginB.restore = function () {
-
-        this.attributes.hodgepodge = true;
     };
 
 
@@ -43,9 +44,14 @@ describe('Hodgepodge', function () {
     var pluginC = function () {};
 
     pluginC.attributes = {
-        name: 'plugin-c'
+        name: 'plugin-c',
+        hodgepodge: true
     };
 
+    pluginC.restore = function () {
+
+        this.attributes.hodgepodge = true;
+    };
 
     // Finally the tests
 
@@ -60,7 +66,7 @@ describe('Hodgepodge', function () {
 
     it('consumes a plain plugin.', function (done) {
 
-        expect(Hodgepodge(pluginA)).to.deep.equal([pluginA]);
+        expect(Hodgepodge(pluginPlain)).to.deep.equal([pluginPlain]);
 
         done();
     });
@@ -86,7 +92,7 @@ describe('Hodgepodge', function () {
 
     it('consumes a list of plugins using the function format.', function (done) {
 
-        expect(Hodgepodge([pluginA])).to.deep.equal([pluginA]);
+        expect(Hodgepodge([pluginPlain])).to.deep.equal([pluginPlain]);
 
         done();
     });
@@ -95,8 +101,7 @@ describe('Hodgepodge', function () {
 
         var plugins = [
             {
-                register: pluginA,
-                options: {}
+                register: pluginPlain
             }
         ];
 
@@ -107,31 +112,36 @@ describe('Hodgepodge', function () {
 
     it('eats-up the hodgepodge attribute.', function (done) {
 
-        expect(pluginB.attributes.hodgepodge).to.equal(true);
+        expect(pluginC.attributes.hodgepodge).to.equal(true);
 
-        var plugins = Hodgepodge([pluginB]);
+        var plugins = Hodgepodge([pluginC]);
 
-        expect(plugins[0]).to.equal(pluginB);
+        expect(plugins[0]).to.equal(pluginC);
         expect(plugins[0].attributes.hodgepodge).to.not.exist();
 
-        pluginB.restore();
+        pluginC.restore();
 
         done();
     });
 
     it('reorders a list of plugins, respecting their dependencies.', function (done) {
 
-        var plugins = [pluginA, pluginB, pluginC];
+        var plugins = [
+            pluginA,
+            {
+                register: pluginB
+            },
+            pluginC
+        ];
 
-        expect(Hodgepodge(plugins)).to.deep.equal([pluginC, pluginB, pluginA]);
+        expect(Hodgepodge(plugins)).to.deep.equal([pluginC, { register: pluginB }, pluginA]);
 
-        pluginB.restore();
+        pluginC.restore();
 
         done();
     });
 
     it('throws on circular dependencies.', function (done) {
-
 
         var wantsOne = function () {};
         wantsOne.attributes = {
@@ -151,6 +161,18 @@ describe('Hodgepodge', function () {
         };
 
         expect(hodgepodging).to.throw();
+
+        done();
+    });
+
+    it('throws on missing dependencies.', function (done) {
+
+        var hodgepodging = function () {
+
+            Hodgepodge([pluginA, pluginB]);
+        };
+
+        expect(hodgepodging).to.throw('Missing dependencies: plugin-c.');
 
         done();
     });
