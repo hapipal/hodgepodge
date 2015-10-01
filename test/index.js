@@ -100,14 +100,6 @@ describe('Hodgepodge', function () {
         done();
     });
 
-    it('reorders a list of plugins, respecting their dependencies.', function (done) {
-
-        var plugins = [pluginA, pluginB, pluginC];
-
-        expect(Hodgepodge(plugins)).to.deep.equal([pluginC, pluginB, pluginA]);
-        done();
-    });
-
     it('eats-up the hodgepodge attribute.', function (done) {
 
         expect(pluginB.attributes.hodgepodge).to.equal(true);
@@ -118,6 +110,15 @@ describe('Hodgepodge', function () {
         expect(plugins[0].attributes.hodgepodge).to.not.exist();
 
         pluginB.restore();
+        done();
+    });
+
+    it('reorders a list of plugins, respecting their dependencies.', function (done) {
+
+        var plugins = [pluginA, pluginB, pluginC];
+
+        expect(Hodgepodge(plugins)).to.deep.equal([pluginC, pluginB, pluginA]);
+
         done();
     });
 
