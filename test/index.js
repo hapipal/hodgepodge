@@ -54,12 +54,14 @@ describe('Hodgepodge', function () {
         expect(Hodgepodge(false)).to.deep.equal([]);
         expect(Hodgepodge(null)).to.deep.equal([]);
         expect(Hodgepodge(undefined)).to.deep.equal([]);
+        
         done();
     });
 
     it('consumes a plain plugin.', function (done) {
 
         expect(Hodgepodge(pluginA)).to.deep.equal([pluginA]);
+
         done();
     });
 
@@ -78,12 +80,14 @@ describe('Hodgepodge', function () {
         expect(Hodgepodge(ufos)).to.deep.equal(ufos);
         expect(Hodgepodge(degenerates)).to.deep.equal(degenerates);
         expect(Hodgepodge(1)).to.deep.equal([1]);
+
         done();
     });
 
     it('consumes a list of plugins using the function format.', function (done) {
 
         expect(Hodgepodge([pluginA])).to.deep.equal([pluginA]);
+
         done();
     });
 
@@ -97,6 +101,7 @@ describe('Hodgepodge', function () {
         ];
 
         expect(Hodgepodge(plugins)).to.deep.equal(plugins);
+
         done();
     });
 
@@ -110,6 +115,7 @@ describe('Hodgepodge', function () {
         expect(plugins[0].attributes.hodgepodge).to.not.exist();
 
         pluginB.restore();
+
         done();
     });
 
