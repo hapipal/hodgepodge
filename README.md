@@ -44,7 +44,7 @@ exports.register.attributes = {
 ```
 
 #### Without hodgepodge
-Here's what the clunkier (but steadfast!) `server.dependency(deps, [after])` patterns looks like,
+Here's what the clunkier (but steadfast!) `server.dependency(deps, [after])` pattern looks like,
 ```js
 // Life without hodgepodge
 
