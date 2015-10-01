@@ -10,9 +10,9 @@ When you declare dependencies on a hapi plugin, whether by `server.dependency()`
 ### More
 In a sense this is an alternative to the `server.dependency(deps, [after])` pattern, which some find to be clunky.  In contrast to use of `server.dependency()`'s `after` callback, dependencies are dealt with at the time of plugin registration rather than during server initialization (during `onPreStart`).
 
-Due to this core difference in timing, it may be required that your plugin be registered using hodgepodge to ensure that plugin dependencies are resolved in time for the plugin to be used.  In order to enforce this, add `hodgepodge: true` to your plugin attribute.  When hodgepodge passes over your plugin, it will remove this attribute; but if hodgepodge is not used to register your plugin, hapi will fail when it tries to register your plugin because `hodgepodge` is an invalid attribute.  This is by design, in case you want to enforce registration of your plugin using hodgepodge.  If you do this, remember that hodgepodge is then a `peerDependency` of your project!
+Due to this core difference in timing, it may be required that your plugin be registered using hodgepodge to ensure that plugin dependencies are resolved in time for the plugin to be used.  In order to enforce this, add `hodgepodge: true` to your plugin attributes.  When hodgepodge passes over your plugin, it will remove this attribute; but if hodgepodge is not used to register your plugin, hapi will fail when it tries to register your plugin because `hodgepodge` is an invalid attribute.  This is by design, in case you want to enforce registration of your plugin using hodgepodge.  If you do this, remember that hodgepodge is then a `peerDependency` of your project!
 
-Hodgepodge will throw an exception when there are circular dependencies, or if dependencies will not be met during registration.
+Hodgepodge throws an exception when there are circular dependencies, or if dependencies will otherwise not be met during registration.
 
 ## Usage
 

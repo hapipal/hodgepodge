@@ -1,7 +1,7 @@
 {
   "name": "hodgepodge",
   "version": "0.0.1",
-  "description": "Registering hapi plugins in order since 2015",
+  "description": "Resolving hapi plugin dependencies since 2015",
   "main": "lib/index.js",
   "directories": {
     "test": "test"
