@@ -14,6 +14,10 @@ Due to this core difference in timing, it may be required that your plugin be re
 
 Hodgepodge throws an exception when there are circular dependencies, or if dependencies will otherwise not be met during registration.
 
+### Limitations
+Because hodgepodge reorders serial plugin registrations rather than deferring plugin registration until dependencies are met, hodgepodge can only resolve dependencies among plugins that are registered at the same time.
+
+
 ## Usage
 
 ### Writing a plugin
