@@ -14,11 +14,11 @@ Due to this core difference in timing, it may be required that your plugin be re
 
 Hodgepodge will throw an exception when there are circular dependencies, or if dependencies will not be met during registration.
 
-## Example
+## Usage
 
-## Writing a plugin
+### Writing a plugin
 
-### With hodgepodge
+#### With hodgepodge
 Here's what plugin authorship looks like assuming use of hodgepodge,
 ```js
 // Life with hodgepodge
@@ -39,7 +39,7 @@ exports.register.attributes = {
 
 ```
 
-### Without hodgepodge
+#### Without hodgepodge
 Here's what the clunkier (but steadfast!) `server.dependency(deps, [after])` patterns looks like,
 ```js
 // Life without hodgepodge
@@ -67,14 +67,14 @@ internals.register = function (options) {
 };
 ```
 
-## Registering plugins
+### Registering plugins
 Hodgepodge accepts and understands any plugin registration format that you would normally pass to `server.register()`.
 ```js
 var Hodgepodge = require('hodgepodge');
 
 var plugins = Hodgepodge([
-  require('my-plugin'), // May require john-does-plugin be registered first
-  require('john-does-plugin'), // May require don-moes-plugin be registered first
+  require('my-plugin'),         // May require john-does-plugin be registered first
+  require('john-does-plugin'),  // May require don-moes-plugin be registered first
   require('don-moes-plugin')
 ]);
 
