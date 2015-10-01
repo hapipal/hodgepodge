@@ -32,7 +32,8 @@
     "hapi": ">=8.3.0"
   },
   "devDependencies": {
-    "lab": "6.x.x",
-    "code": "1.x.x"
+    "code": "1.x.x",
+    "coveralls": "2.x.x",
+    "lab": "6.x.x"
   }
 }
