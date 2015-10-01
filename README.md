@@ -36,9 +36,9 @@ exports.register = function (server, options, next) {
 };
 
 exports.register.attributes = {
-  name: 'my-plugin',
-  dependencies: ['vision'], // Hodgepodge enforces this when the plugin is registered
-  hodgepodge: true // Ensure this plugin is registered with hodgepodge (optional)
+    name: 'my-plugin',
+    dependencies: ['vision'], // Hodgepodge enforces this when the plugin is registered
+    hodgepodge: true // Ensure this plugin is registered with hodgepodge (optional)
 };
 
 ```
@@ -56,7 +56,7 @@ exports.register = function (server, options, next) {
 };
 
 exports.register.attributes = {
-  name: 'my-plugin'
+    name: 'my-plugin'
 };
 
 internals.register = function (options) {
@@ -77,9 +77,9 @@ Hodgepodge accepts and understands any plugin registration format that you would
 var Hodgepodge = require('hodgepodge');
 
 var plugins = Hodgepodge([
-  require('my-plugin'),         // May require john-does-plugin be registered first
-  require('john-does-plugin'),  // May require don-moes-plugin be registered first
-  require('don-moes-plugin')
+    require('my-plugin'),         // May require john-does-plugin be registered first
+    require('john-does-plugin'),  // May require don-moes-plugin be registered first
+    require('don-moes-plugin')
 ]);
 
 server.register(plugins, function (err) {
