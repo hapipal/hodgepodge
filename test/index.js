@@ -54,7 +54,7 @@ describe('Hodgepodge', function () {
         expect(Hodgepodge(false)).to.deep.equal([]);
         expect(Hodgepodge(null)).to.deep.equal([]);
         expect(Hodgepodge(undefined)).to.deep.equal([]);
-        
+
         done();
     });
 
@@ -124,6 +124,33 @@ describe('Hodgepodge', function () {
         var plugins = [pluginA, pluginB, pluginC];
 
         expect(Hodgepodge(plugins)).to.deep.equal([pluginC, pluginB, pluginA]);
+
+        pluginB.restore();
+
+        done();
+    });
+
+    it('throws on circular dependencies.', function (done) {
+
+
+        var wantsOne = function () {};
+        wantsOne.attributes = {
+            name: 'two',
+            dependencies: 'one'
+        };
+
+        var wantsTwo = function () {};
+        wantsTwo.attributes = {
+            name: 'one',
+            dependencies: 'two'
+        };
+
+        var hodgepodging = function () {
+
+            Hodgepodge([wantsOne, wantsTwo]);
+        };
+
+        expect(hodgepodging).to.throw();
 
         done();
     });
