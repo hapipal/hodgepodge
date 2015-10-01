@@ -2,7 +2,7 @@
 
 Resolving hapi plugin dependencies since 2015
 
-[![Build Status](https://travis-ci.org/devinivy/hodgepodge.svg?branch=master)](https://travis-ci.org/devinivy/hodgepodge)
+[![Build Status](https://travis-ci.org/devinivy/hodgepodge.svg?branch=master)](https://travis-ci.org/devinivy/hodgepodge) [![Coverage Status](https://coveralls.io/repos/devinivy/hodgepodge/badge.svg?branch=master&service=github)](https://coveralls.io/github/devinivy/hodgepodge?branch=master)
 
 ## The Basics
 When you declare dependencies on a hapi plugin, whether by `server.dependency()` or by the `dependencies` attribute, hapi does not actually defer plugin registration to resolve those dependencies in time.  It just assures that those dependencies exist at the time the server is initialized.  Hodgepodge actually reorders your plugin registrations so that they occur in an order that respects their dependencies, simply by paying attention to their `dependencies` attributes.
