@@ -7,7 +7,8 @@
     "test": "test"
   },
   "scripts": {
-    "test": "lab -a code -t 100 -L"
+    "test": "lab -a code -t 100 -L",
+    "coveralls": "node_modules/.bin/lab -r lcov | node_modules/.bin/coveralls"
   },
   "repository": {
     "type": "git",
