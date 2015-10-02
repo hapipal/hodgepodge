@@ -9,12 +9,12 @@ Resolving hapi plugin dependencies since 2015
 var Hodgepodge = require('hodgepodge');
 
 var plugins = Hodgepodge([
-  pluginA,
-  pluginB // pluginB.register.attributes.dependencies === 'pluginA'
+  pluginA, // pluginA.register.attributes.dependencies === 'pluginB'
+  pluginB 
 ]);
 
 // Now plugins looks like [pluginB, pluginA]
-// This ordering respects pluginB's dependency on pluginA
+// This ordering respects pluginA's dependency on pluginB
 
 server.register(plugins, function (err) {/* ... */});
 ```
