@@ -5,6 +5,19 @@ Resolving hapi plugin dependencies since 2015
 [![Build Status](https://travis-ci.org/devinivy/hodgepodge.svg?branch=master)](https://travis-ci.org/devinivy/hodgepodge) [![Coverage Status](https://coveralls.io/repos/devinivy/hodgepodge/badge.svg?branch=master&service=github)](https://coveralls.io/github/devinivy/hodgepodge?branch=master)
 
 ## The Basics
+```js
+var Hodgepodge = require('hodgepodge');
+
+var plugins = Hodgepodge([
+  pluginA,
+  pluginB // pluginB.register.attributes.dependencies === 'pluginA'
+]);
+
+// Now plugins looks like [pluginB, pluginA]
+// This ordering respects pluginB's dependency on pluginA
+
+server.register(plugins, function (err) {/* ... */});
+```
 When you declare dependencies on a hapi plugin, whether by [`server.register()`](http://hapijs.com/api#serverregisterplugins-options-callback) or by the `dependencies` attribute, hapi does not actually defer plugin registration to resolve those dependencies in time.  It just assures that those dependencies exist at the time the server is initialized.  Hodgepodge actually reorders your plugin registrations so that they occur in an order that respects their dependencies, simply by paying attention to their `dependencies` attributes.
 
 ### More
@@ -19,6 +32,25 @@ Because hodgepodge reorders serial plugin registrations rather than deferring pl
 
 
 ## Usage
+
+### Registering plugins
+Hodgepodge accepts and understands any plugin registration format that you would normally pass to [`server.register()`](http://hapijs.com/api#serverregisterplugins-options-callback).  It returns an array of the reordered plugin registrations.
+```js
+var Hodgepodge = require('hodgepodge');
+
+var plugins = Hodgepodge([
+    require('my-plugin'),         // Requires john-does-plugin be registered first
+    require('john-does-plugin'),  // Requires don-moes-plugin be registered first
+    require('don-moes-plugin')
+]);
+
+// Registers don-moes-plugin, john-does-plugin, then my-plugin
+server.register(plugins, function (err) {
+    if (err) {
+        console.error('Failed to load a plugin:', err);
+    }
+});
+```
 
 ### Writing a plugin
 
@@ -71,30 +103,12 @@ internals.register = function (options) {
 };
 ```
 
-### Registering plugins
-Hodgepodge accepts and understands any plugin registration format that you would normally pass to [`server.register()`](http://hapijs.com/api#serverregisterplugins-options-callback).
-```js
-var Hodgepodge = require('hodgepodge');
-
-var plugins = Hodgepodge([
-    require('my-plugin'),         // May require john-does-plugin be registered first
-    require('john-does-plugin'),  // May require don-moes-plugin be registered first
-    require('don-moes-plugin')
-]);
-
-server.register(plugins, function (err) {
-    if (err) {
-        console.error('Failed to load a plugin:', err);
-    }
-});
-```
-
 
 ## API
 
 ### `Hodgepodge(plugins, [looseTally])`
-A function that reorders hapi `plugins` to respect thier `attributes.dependencies` where,
+A function that returns an array of reordered hapi `plugins` to respect thier `attributes.dependencies` where,
  - `plugins` - a mixed value, typically a mixed array, of hapi plugin registrations as would be passed to hapi's [`server.register()`](http://hapijs.com/api#serverregisterplugins-options-callback).  This argument permissively accepts all values so that hapi can handle plugin formatting errors.
- - `looseTally` - a boolean value defaulting to `false` that, when `true`, only requires that hapi plugins with `attributes.hodgepodge` present have their dependencies fully satisfied in the list of `plugins`.  This may be desirable when plugins without `attributes.hodgepodge` have had their dependencies satisfied from prior plugin registrations or otherwise do not want to rely on hodgepodge for dependency resolution.
+ - `looseTally` - a boolean value defaulting to `false` that, when `true`, only requires that hapi plugins with `attributes.hodgepodge` present have their dependencies fully satisfied in the list of `plugins`.  This may be desirable when plugins without `attributes.hodgepodge` have had their dependencies satisfied from prior plugin registrations or otherwise do not want to rely on hodgepodge for dependency resolution.  The name of the option refers to keeping a "loose tally" of missing dependencies.
 
 `Hodgepodge()` will remove the plugin attribute `hodgepodge` from all plugins in the `plugins` list.  This can be leveraged in a plugin to require that hodgepodge be used to register it; otherwise vanilla plugin registration would fail since `hodgepodge` is not a valid hapi plugin attribute.  `Hodgepodge()` throws an exception when there are circular dependencies.  It also throws an exception when there are missing dependencies in the list of `plugins`, differing in behavior based upon `looseTally`.
