@@ -60,6 +60,21 @@ describe('Hodgepodge', function () {
         this.register.attributes.hodgepodge = true;
     };
 
+    // Plugin D
+
+    var pluginD = { register: function () {} };
+
+    pluginD.register.attributes = {
+        name: 'plugin-d',
+        dependencies: ['plugin-a', 'plugin-b'],
+        hodgepodge: true
+    };
+
+    pluginD.restore = function () {
+
+        this.register.attributes.hodgepodge = true;
+    };
+
     // Finally the tests
 
     it('consumes falsey values.', function (done) {
@@ -198,7 +213,7 @@ describe('Hodgepodge', function () {
         done();
     });
 
-    it('throws on missing dependencies.', function (done) {
+    it('throws on missing dependencies without loose tally.', function (done) {
 
         var hodgepodging = function () {
 
@@ -206,6 +221,34 @@ describe('Hodgepodge', function () {
         };
 
         expect(hodgepodging).to.throw('Missing dependencies: plugin-c.');
+
+        done();
+    });
+
+    it('throws on missing dependencies only of hodgepodged plugins with loose tally.', function (done) {
+
+        var hodgepodging = function () {
+
+            Hodgepodge([pluginB, pluginD], true);
+        };
+
+        expect(hodgepodging).to.throw('Missing dependencies: plugin-a.');
+
+        pluginD.restore();
+
+        done();
+    });
+
+    it('does not throw on missing dependencies of non-hodgepodged plugins with loose tally.', function (done) {
+
+        var hodgepodging = function () {
+
+            Hodgepodge([pluginA, pluginC], true);
+        };
+
+        expect(hodgepodging).to.not.throw();
+
+        pluginC.restore();
 
         done();
     });
