@@ -7,7 +7,7 @@ Resolving hapi plugin dependencies since 2015
 ## The Basics
 When you declare dependencies on a hapi plugin, whether by [`server.register()`](http://hapijs.com/api#serverregisterplugins-options-callback) or by the `dependencies` attribute, hapi does not actually defer plugin registration to resolve those dependencies in time.  It just assures that those dependencies exist at the time the server is initialized.  Hodgepodge actually reorders your plugin registrations so that they occur in an order that respects their dependencies, simply by paying attention to their `dependencies` attributes.
 
-### Mored
+### More
 In a sense this is an alternative to the [`server.dependency(deps, [after])`](http://hapijs.com/api#serverdependencydependencies-after) pattern, which some find to be clunky.  In contrast to use of [`server.dependency()`](http://hapijs.com/api#serverdependencydependencies-after)'s `after` callback, dependencies are dealt with at the time of plugin registration rather than during server initialization (during `onPreStart`).
 
 Due to this core difference in timing, it may be required that your plugin be registered using hodgepodge to ensure that plugin dependencies are resolved in time for the plugin to be used.  In order to enforce this, add `hodgepodge: true` to your plugin attributes.  When hodgepodge passes over your plugin, it will remove this attribute; but if hodgepodge is not used to register your plugin, hapi will fail when it tries to register your plugin because `hodgepodge` is an invalid attribute.  This is by design, in case you want to enforce registration of your plugin using hodgepodge.  If you do this, remember that hodgepodge is then a `peerDependency` of your project!
