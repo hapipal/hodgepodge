@@ -22,12 +22,7 @@ describe('Hodgepodge', () => {
 
     pluginPlain.register.attributes = {
         name: 'plugin-plain',
-        hodgepodge: true
-    };
-
-    pluginPlain.restore = function () {
-
-        this.register.attributes.hodgepodge = true;
+        dependencies: { hodgepodge: true }
     };
 
     // Plugin A
@@ -54,12 +49,7 @@ describe('Hodgepodge', () => {
 
     pluginC.register.attributes = {
         name: 'plugin-c',
-        hodgepodge: true
-    };
-
-    pluginC.restore = function () {
-
-        this.register.attributes.hodgepodge = true;
+        dependencies: { hodgepodge: true }
     };
 
     // Plugin D
@@ -68,13 +58,7 @@ describe('Hodgepodge', () => {
 
     pluginD.register.attributes = {
         name: 'plugin-d',
-        dependencies: ['plugin-a', 'plugin-b'],
-        hodgepodge: true
-    };
-
-    pluginD.restore = function () {
-
-        this.register.attributes.hodgepodge = true;
+        dependencies: { hodgepodge: ['plugin-a', 'plugin-b'] }
     };
 
     // Finally the tests
@@ -93,8 +77,6 @@ describe('Hodgepodge', () => {
         expect(pluginPlain.register.attributes.hodgepodge).to.equal(true);
         expect(Hodgepodge(pluginPlain)).to.equal([pluginPlain]);
         expect(pluginPlain.register.attributes.hodgepodge).to.not.exist();
-
-        pluginPlain.restore();
 
         done();
     });
@@ -124,8 +106,6 @@ describe('Hodgepodge', () => {
         expect(Hodgepodge([pluginPlain])).to.equal([pluginPlain]);
         expect(pluginPlain.register.attributes.hodgepodge).to.not.exist();
 
-        pluginPlain.restore();
-
         done();
     });
 
@@ -134,8 +114,6 @@ describe('Hodgepodge', () => {
         expect(pluginPlain.register.attributes.hodgepodge).to.equal(true);
         expect(Hodgepodge([pluginPlain.register])).to.equal([pluginPlain.register]);
         expect(pluginPlain.register.attributes.hodgepodge).to.not.exist();
-
-        pluginPlain.restore();
 
         done();
     });
@@ -152,8 +130,6 @@ describe('Hodgepodge', () => {
         expect(Hodgepodge(plugins)).to.equal(plugins);
         expect(pluginPlain.register.attributes.hodgepodge).to.not.exist();
 
-        pluginPlain.restore();
-
         done();
     });
 
@@ -169,8 +145,6 @@ describe('Hodgepodge', () => {
         expect(plugins[0]).to.shallow.equal(pluginC);
         expect(plugins[0].register.attributes.hodgepodge).to.not.exist();
 
-        pluginC.restore();
-
         done();
     });
 
@@ -185,8 +159,6 @@ describe('Hodgepodge', () => {
         ];
 
         expect(Hodgepodge(plugins)).to.equal([pluginC, { register: pluginB }, pluginA.register]);
-
-        pluginC.restore();
 
         done();
     });
@@ -236,8 +208,6 @@ describe('Hodgepodge', () => {
 
         expect(hodgepodging).to.throw('Missing dependencies: plugin-a.');
 
-        pluginD.restore();
-
         done();
     });
 
@@ -250,9 +220,6 @@ describe('Hodgepodge', () => {
 
         expect(hodgepodging).to.not.throw();
 
-        pluginC.restore();
-
         done();
     });
-
 });
