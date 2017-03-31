@@ -208,7 +208,7 @@ describe('Hodgepodge', () => {
             Hodgepodge([wantsOne, wantsTwo]);
         };
 
-        expect(hodgepodging).to.throw('Invalid dependencies');
+        expect(hodgepodging).to.throw();
 
         done();
     });
