@@ -18,7 +18,7 @@ describe('Hodgepodge', () => {
 
     // Plain plugin
 
-    const pluginPlain = { register: function () {} };
+    const pluginPlain = { register: () => 'plain' };
 
     pluginPlain.register.attributes = {
         name: 'plugin-plain',
@@ -27,7 +27,7 @@ describe('Hodgepodge', () => {
 
     // Plugin A
 
-    const pluginA = { register: function () {} };
+    const pluginA = { register: () => 'A' };
     pluginA.register.attributes = {
         name: 'plugin-a',
         dependencies: ['plugin-b', 'plugin-c']
@@ -36,7 +36,7 @@ describe('Hodgepodge', () => {
 
     // Plugin B
 
-    const pluginB = { register: function () {} };
+    const pluginB = { register: () => 'B' };
     pluginB.register.attributes = {
         name: 'plugin-b',
         dependencies: 'plugin-c'
@@ -45,7 +45,7 @@ describe('Hodgepodge', () => {
 
     // Plugin C
 
-    const pluginC = { register: function () {} };
+    const pluginC = { register: () => 'C' };
 
     pluginC.register.attributes = {
         name: 'plugin-c',
@@ -54,7 +54,7 @@ describe('Hodgepodge', () => {
 
     // Plugin D
 
-    const pluginD = { register: function () {} };
+    const pluginD = { register: () => 'D' };
 
     pluginD.register.attributes = {
         name: 'plugin-d',
@@ -74,9 +74,14 @@ describe('Hodgepodge', () => {
 
     it('consumes a plain plugin.', (done) => {
 
-        expect(pluginPlain.register.attributes.hodgepodge).to.equal(true);
-        expect(Hodgepodge(pluginPlain)).to.equal([pluginPlain]);
-        expect(pluginPlain.register.attributes.hodgepodge).to.not.exist();
+        expect(pluginPlain.register.attributes.dependencies.hodgepodge).to.exist();
+
+        const hodgepodged = Hodgepodge(pluginPlain);
+
+        expect(hodgepodged).to.have.length(1);
+        expect(hodgepodged[0]).to.be.a.function();
+        expect(hodgepodged[0]()).to.equal('plain');
+        expect(hodgepodged[0].attributes.dependencies).to.equal([]);
 
         done();
     });
@@ -102,48 +107,42 @@ describe('Hodgepodge', () => {
 
     it('consumes a list of plugins using the register/function format.', (done) => {
 
-        expect(pluginPlain.register.attributes.hodgepodge).to.equal(true);
-        expect(Hodgepodge([pluginPlain])).to.equal([pluginPlain]);
-        expect(pluginPlain.register.attributes.hodgepodge).to.not.exist();
+        expect(pluginPlain.register.attributes.dependencies.hodgepodge).to.equal(true);
+
+        const hodgepodged = Hodgepodge([pluginPlain]);
+
+        expect(hodgepodged).to.have.length(1);
+        expect(hodgepodged[0]).to.be.a.function();
+        expect(hodgepodged[0]()).to.equal('plain');
+        expect(hodgepodged[0].attributes.dependencies).to.equal([]);
 
         done();
     });
 
     it('consumes a list of plugins using the function format.', (done) => {
 
-        expect(pluginPlain.register.attributes.hodgepodge).to.equal(true);
-        expect(Hodgepodge([pluginPlain.register])).to.equal([pluginPlain.register]);
-        expect(pluginPlain.register.attributes.hodgepodge).to.not.exist();
+        expect(pluginPlain.register.attributes.dependencies.hodgepodge).to.equal(true);
+
+        const hodgepodged = Hodgepodge([pluginPlain.register]);
+
+        expect(hodgepodged).to.have.length(1);
+        expect(hodgepodged[0]).to.be.a.function();
+        expect(hodgepodged[0]()).to.equal('plain');
+        expect(hodgepodged[0].attributes.dependencies).to.equal([]);
 
         done();
     });
 
     it('consumes a list of plugins using the object format.', (done) => {
 
-        const plugins = [
-            {
-                register: pluginPlain
-            }
-        ];
+        expect(pluginPlain.register.attributes.dependencies.hodgepodge).to.equal(true);
 
-        expect(pluginPlain.register.attributes.hodgepodge).to.equal(true);
-        expect(Hodgepodge(plugins)).to.equal(plugins);
-        expect(pluginPlain.register.attributes.hodgepodge).to.not.exist();
+        const hodgepodged = Hodgepodge([{ register: pluginPlain }]);
 
-        done();
-    });
-
-    it('eats-up the hodgepodge attribute.', (done) => {
-
-        // The hodgepodge attribute is used in other tests to show that attributes
-        // were consumed, but this is the canonical test for the hodgepodge attribute.
-
-        expect(pluginC.register.attributes.hodgepodge).to.equal(true);
-
-        const plugins = Hodgepodge([pluginC]);
-
-        expect(plugins[0]).to.shallow.equal(pluginC);
-        expect(plugins[0].register.attributes.hodgepodge).to.not.exist();
+        expect(hodgepodged).to.have.length(1);
+        expect(hodgepodged[0]).to.be.a.function();
+        expect(hodgepodged[0]()).to.equal('plain');
+        expect(hodgepodged[0].attributes.dependencies).to.equal([]);
 
         done();
     });
@@ -158,20 +157,47 @@ describe('Hodgepodge', () => {
             pluginC
         ];
 
-        expect(Hodgepodge(plugins)).to.equal([pluginC, { register: pluginB }, pluginA.register]);
+        const hodgepodged = Hodgepodge(plugins);
+
+        expect(hodgepodged).to.have.length(3);
+
+        expect(hodgepodged[0]).to.be.a.function();
+        expect(hodgepodged[0]()).to.equal('C');
+        expect(hodgepodged[0].attributes).to.not.shallow.equal(pluginC.attributes);
+        expect(hodgepodged[0].attributes).to.equal({
+            name: 'plugin-c',
+            dependencies: []
+        });
+
+        // Not hodgepodging– passthrough
+        expect(hodgepodged[1]).to.shallow.equal(plugins[1]);
+        expect(hodgepodged[1].register).to.shallow.equal(pluginB);
+        expect(hodgepodged[1].register.register.attributes).to.shallow.equal(pluginB.register.attributes);
+        expect(hodgepodged[1].register.register.attributes).to.equal({
+            name: 'plugin-b',
+            dependencies: 'plugin-c'
+        });
+
+        expect(hodgepodged[2]).to.be.a.function();
+        expect(hodgepodged[2]()).to.equal('A');
+        expect(hodgepodged[2].attributes).to.not.shallow.equal(pluginA.attributes);
+        expect(hodgepodged[2].attributes).to.equal({
+            name: 'plugin-a',
+            dependencies: ['plugin-b', 'plugin-c']
+        });
 
         done();
     });
 
     it('throws on circular dependencies.', (done) => {
 
-        const wantsOne = { register: function () {} };
+        const wantsOne = { register: () => true };
         wantsOne.register.attributes = {
             name: 'two',
             dependencies: 'one'
         };
 
-        const wantsTwo = { register: function () {} };
+        const wantsTwo = { register: () => true };
         wantsTwo.register.attributes = {
             name: 'one',
             dependencies: 'two'
@@ -182,7 +208,7 @@ describe('Hodgepodge', () => {
             Hodgepodge([wantsOne, wantsTwo]);
         };
 
-        expect(hodgepodging).to.throw();
+        expect(hodgepodging).to.throw('Invalid dependencies');
 
         done();
     });
