@@ -71,9 +71,9 @@ describe('Hodgepodge', () => {
 
     it('consumes falsey values.', (done) => {
 
-        expect(Hodgepodge(false)).to.equal([]);
-        expect(Hodgepodge(null)).to.equal([]);
-        expect(Hodgepodge(undefined)).to.equal([]);
+        expect(Hodgepodge.sort(false)).to.equal([]);
+        expect(Hodgepodge.sort(null)).to.equal([]);
+        expect(Hodgepodge.sort(undefined)).to.equal([]);
 
         done();
     });
@@ -82,7 +82,7 @@ describe('Hodgepodge', () => {
 
         expect(pluginPlain.register.attributes.dependencies.hodgepodge).to.exist();
 
-        const hodgepodged = Hodgepodge(pluginPlain);
+        const hodgepodged = Hodgepodge.sort(pluginPlain);
 
         expect(hodgepodged).to.have.length(1);
         expect(hodgepodged[0].register).to.be.a.function();
@@ -110,9 +110,9 @@ describe('Hodgepodge', () => {
             { register: function () {}, attributes: {} }    // No name
         ];
 
-        expect(Hodgepodge(ufos)).to.equal(ufos);
-        expect(Hodgepodge(degenerates)).to.equal(degenerates);
-        expect(Hodgepodge(1)).to.equal([1]);
+        expect(Hodgepodge.sort(ufos)).to.equal(ufos);
+        expect(Hodgepodge.sort(degenerates)).to.equal(degenerates);
+        expect(Hodgepodge.sort(1)).to.equal([1]);
 
         done();
     });
@@ -121,7 +121,7 @@ describe('Hodgepodge', () => {
 
         expect(pluginPlain.register.attributes.dependencies.hodgepodge).to.equal(true);
 
-        const hodgepodged = Hodgepodge([pluginPlain]);
+        const hodgepodged = Hodgepodge.sort([pluginPlain]);
 
         expect(hodgepodged).to.have.length(1);
         expect(hodgepodged[0].register).to.be.a.function();
@@ -138,7 +138,7 @@ describe('Hodgepodge', () => {
 
         expect(pluginPlain.register.attributes.dependencies.hodgepodge).to.equal(true);
 
-        const hodgepodged = Hodgepodge([pluginPlain.register]);
+        const hodgepodged = Hodgepodge.sort([pluginPlain.register]);
 
         expect(hodgepodged).to.have.length(1);
         expect(hodgepodged[0].register).to.be.a.function();
@@ -155,7 +155,7 @@ describe('Hodgepodge', () => {
 
         expect(pluginPlain.register.attributes.dependencies.hodgepodge).to.equal(true);
 
-        const hodgepodged = Hodgepodge([{ register: pluginPlain }]);
+        const hodgepodged = Hodgepodge.sort([{ register: pluginPlain }]);
 
         expect(hodgepodged).to.have.length(1);
         expect(hodgepodged[0].register).to.be.a.function();
@@ -183,7 +183,7 @@ describe('Hodgepodge', () => {
             }
         ];
 
-        const hodgepodged = Hodgepodge(plugins);
+        const hodgepodged = Hodgepodge.sort(plugins);
 
         expect(hodgepodged).to.have.length(4);
 
@@ -247,7 +247,7 @@ describe('Hodgepodge', () => {
 
         const hodgepodging = () => {
 
-            Hodgepodge([wantsOne, wantsTwo]);
+            Hodgepodge.sort([wantsOne, wantsTwo]);
         };
 
         expect(hodgepodging).to.throw();
@@ -259,7 +259,7 @@ describe('Hodgepodge', () => {
 
         const hodgepodging = () => {
 
-            Hodgepodge([pluginA, pluginB]);
+            Hodgepodge.sort([pluginA, pluginB]);
         };
 
         expect(hodgepodging).to.throw('Missing dependencies: plugin-c.');
@@ -271,7 +271,7 @@ describe('Hodgepodge', () => {
 
         const hodgepodging = () => {
 
-            Hodgepodge([pluginB, pluginD], true);
+            Hodgepodge.sort([pluginB, pluginD], true);
         };
 
         expect(hodgepodging).to.throw('Missing dependencies: plugin-a.');
@@ -283,7 +283,7 @@ describe('Hodgepodge', () => {
 
         const hodgepodging = () => {
 
-            Hodgepodge([pluginA, pluginC], true);
+            Hodgepodge.sort([pluginA, pluginC], true);
         };
 
         expect(hodgepodging).to.not.throw();
@@ -304,7 +304,7 @@ describe('Hodgepodge', () => {
 
         expect(() => server.register(plugin, () => true)).to.throw(/^Invalid plugin options/);
 
-        server.register(Hodgepodge(plugin), (err) => {
+        server.register(Hodgepodge.sort(plugin), (err) => {
 
             expect(err).to.not.exist();
 
