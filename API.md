@@ -26,9 +26,9 @@ plugin.attributes = {
 `Hodgepodge.sort()` throws an exception when there are circular dependencies.  It also throws an exception when there are missing dependencies in the list of `plugins`, differing in behavior based upon `looseTally`.
 
 
-### Examples
+## Examples
 
-#### Registering plugins
+### Registering plugins
 Hodgepodge accepts and understands any plugin registration format that you would normally pass to [`server.register()`](http://hapijs.com/api#serverregisterplugins-options-callback).  It returns an array of the reordered plugin registrations.
 ```js
 const Hodgepodge = require('hodgepodge');
@@ -47,9 +47,9 @@ server.register(plugins, function (err) {
 });
 ```
 
-#### Writing a plugin
+### Writing a plugin
 
-##### With hodgepodge
+#### With hodgepodge
 Here's what plugin authorship looks like assuming use of hodgepodge,
 ```js
 // Life with hodgepodge
@@ -72,7 +72,7 @@ exports.register.attributes = {
 
 ```
 
-##### Without hodgepodge
+#### Without hodgepodge
 Here's what the clunkier (but steadfast!) [`server.dependency(deps, [after])`](http://hapijs.com/api#serverdependencydependencies-after) pattern looks like,
 ```js
 // Life without hodgepodge
@@ -90,9 +90,9 @@ exports.register.attributes = {
     name: 'my-plugin'
 };
 
-internals.register = function (options) {
+internals.register = (options) => {
 
-    return (server, next) {
+    return (server, next) => {
 
         // Requires vision
         server.views(/* ... */);
