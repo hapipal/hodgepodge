@@ -1,6 +1,6 @@
 {
   "name": "hodgepodge",
-  "version": "2.0.1",
+  "version": "2.0.0",
   "description": "Resolving hapi plugin dependencies since 2015",
   "main": "lib/index.js",
   "directories": {
@@ -30,7 +30,7 @@
     "topo": "2.x.x"
   },
   "peerDependencies": {
-    "hapi": "16.x.x"
+    "hapi": ">=10 <17"
   },
   "devDependencies": {
     "code": "4.x.x",
