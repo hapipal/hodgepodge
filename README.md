@@ -8,13 +8,15 @@ Lead Maintainer - [Devin Ivy](https://github.com/devinivy)
 
 ## Usage
 > See also the [API Reference](API.md)
+>
+> This version of hodgepodge is for **hapi v17+**
 
-When you declare dependencies on a hapi plugin, whether by [`server.dependency()`](https://github.com/hapijs/hapi/blob/master/API.md#server.dependency()) or by the [`dependencies` plugin property](https://github.com/hapijs/hapi/blob/master/API.md#plugins), hapi does not actually defer plugin registration to resolve those dependencies.  It just assures that those dependencies exist at the time the server is initialized.  Hodgepodge actually reorders your plugin registrations so that they occur in an order that respects their dependencies, simply by paying attention to their `dependencies` attributes.
+When you declare dependencies on a hapi plugin, whether by [`server.dependency()`](https://github.com/hapijs/hapi/blob/master/API.md#server.dependency()) or by the [`dependencies` plugin property](https://github.com/hapijs/hapi/blob/master/API.md#plugins), hapi does not actually defer plugin registration to resolve those dependencies.  It just assures that those dependencies exist at the time the server is initialized.  Hodgepodge actually reorders your plugin registrations so that they occur in an order that respects their dependencies, simply by paying attention to their listed `dependencies`.
 
 > **Note**
 >
 > It's suggested to use hodgepodge only when it's really necessary– ideally plugin registration order should not matter.  You may, for example, utilize the [`once` plugin registration option](https://github.com/hapijs/hapi/blob/master/API.md#server.register()) or
-[`once`/`multiple` plugin properties](https://github.com/hapijs/hapi/blob/master/API.md#plugins) so that plugins may simply be registered by every plugin that depends on them.
+[`once`/`multiple` plugin properties](https://github.com/hapijs/hapi/blob/master/API.md#plugins) so that plugins may simply be registered by every other plugin that depends on them.
 
 ```js
 const Hodgepodge = require('hodgepodge');
