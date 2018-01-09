@@ -9,93 +9,88 @@ const Hodgepodge = require('..');
 
 // Test shortcuts
 
-const lab = exports.lab = Lab.script();
-const describe = lab.describe;
-const it = lab.it;
-const expect = Code.expect;
+const { describe, it } = exports.lab = Lab.script();
+const { expect } = Code;
 
 
 describe('Hodgepodge', () => {
 
     // Plain plugin
 
-    const pluginPlain = { register: () => 'plain' };
-
-    pluginPlain.register.attributes = {
+    const pluginPlain = {
         name: 'plugin-plain',
-        dependencies: { hodgepodge: true }
+        dependencies: { hodgepodge: true },
+        register: () => 'plain'
     };
 
     // Plugin A
 
-    const pluginA = { register: () => 'A' };
-    pluginA.register.attributes = {
+    const pluginA = {
         name: 'plugin-a',
-        dependencies: ['plugin-b', 'plugin-c']
+        dependencies: ['plugin-b', 'plugin-c'],
+        register: () => 'A'
     };
 
     // Plugin B
 
-    const pluginB = { register: () => 'B' };
-    pluginB.register.attributes = {
+    const pluginB = {
         name: 'plugin-b',
-        dependencies: 'plugin-c'
+        dependencies: 'plugin-c',
+        register: () => 'B'
     };
 
     // Plugin C
 
-    const pluginC = { register: () => 'C' };
-    pluginC.register.attributes = {
-        name: 'plugin-c',
-        dependencies: { hodgepodge: true }
+    const pluginC = {
+        pkg: { name: 'plugin-c' },
+        dependencies: { hodgepodge: true },
+        register: () => 'C'
     };
 
     // Plugin D
 
-    const pluginD = { register: () => 'D' };
-
-    pluginD.register.attributes = {
+    const pluginD = {
         name: 'plugin-d',
-        dependencies: { hodgepodge: ['plugin-a', 'plugin-b'] }
+        dependencies: { hodgepodge: ['plugin-a', 'plugin-b'] },
+        register: () => 'D'
     };
 
     // Plugin E
 
-    const pluginE = { register: () => 'E' };
-
-    pluginE.register.attributes = {
-        name: 'plugin-e'
+    const pluginE = {
+        name: 'plugin-e',
+        register: () => 'E'
     };
 
     // Finally the tests
 
-    it('consumes falsey values.', (done) => {
+    it('consumes falsey values.', () => {
 
         expect(Hodgepodge.sort(false)).to.equal([]);
         expect(Hodgepodge.sort(null)).to.equal([]);
         expect(Hodgepodge.sort(undefined)).to.equal([]);
-
-        done();
     });
 
-    it('consumes a plain plugin.', (done) => {
+    it('consumes a plain plugin.', () => {
 
-        expect(pluginPlain.register.attributes.dependencies.hodgepodge).to.exist();
+        expect(pluginPlain.dependencies.hodgepodge).to.exist();
 
         const hodgepodged = Hodgepodge.sort(pluginPlain);
 
-        expect(hodgepodged).to.have.length(1);
-        expect(hodgepodged[0].register).to.be.a.function();
-        expect(hodgepodged[0].register()).to.equal('plain');
-        expect(hodgepodged[0].register.attributes).to.equal({
+        const [
+            { plugin: { register, ...attributes } },
+            ...others
+        ] = hodgepodged;
+
+        expect(others).to.have.length(0);
+        expect(register()).to.equal('plain');
+        expect(attributes).to.equal({
             name: 'plugin-plain',
             dependencies: []
         });
-
-        done();
     });
 
-    it('consumes unfamiliar objects.', (done) => {
+    it('consumes unfamiliar objects.', () => {
 
         const ufos = [
             1,
@@ -104,145 +99,190 @@ describe('Hodgepodge', () => {
             null
         ];
 
+        expect(Hodgepodge.sort(ufos)).to.equal(ufos);
+
         const degenerates = [
-            { register: 2 },                                // No plugin function
-            { register: function () {} },                   // No attributes
-            { register: function () {}, attributes: {} }    // No name
+            {   // No registration function
+                register: 2,
+                name: 'plugin-name',
+                dependencies: { hodgepodge: true }
+            },
+            {   // No name
+                register: () => null,
+                dependencies: { hodgepodge: true }
+            },
+            {   // No name from pkg
+                register: () => null,
+                dependencies: { hodgepodge: true },
+                pkg: {}
+            },
+            {   // No plugin.plugin
+                plugin: {}
+            }
         ];
 
-        expect(Hodgepodge.sort(ufos)).to.equal(ufos);
-        expect(Hodgepodge.sort(degenerates)).to.equal(degenerates);
-        expect(Hodgepodge.sort(1)).to.equal([1]);
+        const [X, Y, Z, W, ...others] = Hodgepodge.sort(degenerates);
 
-        done();
+        expect(others).to.have.length(0);
+        expect([X, Y, Z, W]).to.equal(degenerates);
+        expect(X).to.equal(degenerates[0]);
+        expect(Y).to.equal(degenerates[1]);
+        expect(Z).to.equal(degenerates[2]);
+        expect(W).to.equal(degenerates[3]);
+
+        expect(Hodgepodge.sort(1)).to.equal([1]);
     });
 
-    it('consumes a list of plugins using the register/function format.', (done) => {
+    it('consumes a list of plugins using the { register } format.', () => {
 
-        expect(pluginPlain.register.attributes.dependencies.hodgepodge).to.equal(true);
+        expect(pluginPlain.dependencies.hodgepodge).to.equal(true);
 
         const hodgepodged = Hodgepodge.sort([pluginPlain]);
 
-        expect(hodgepodged).to.have.length(1);
-        expect(hodgepodged[0].register).to.be.a.function();
-        expect(hodgepodged[0].register()).to.equal('plain');
-        expect(hodgepodged[0].register.attributes).to.equal({
+        const [
+            { plugin: { register, ...attributes } },
+            ...others
+        ] = hodgepodged;
+
+        expect(others).to.have.length(0);
+        expect(register()).to.equal('plain');
+        expect(attributes).to.equal({
             name: 'plugin-plain',
             dependencies: []
         });
-
-        done();
     });
 
-    it('consumes a list of plugins using the function format.', (done) => {
+    it('consumes a list of plugins using the { plugin, options } format.', () => {
 
-        expect(pluginPlain.register.attributes.dependencies.hodgepodge).to.equal(true);
+        expect(pluginPlain.dependencies.hodgepodge).to.equal(true);
 
-        const hodgepodged = Hodgepodge.sort([pluginPlain.register]);
+        const options = {};
+        const hodgepodged = Hodgepodge.sort([{ plugin: pluginPlain, options }]);
 
-        expect(hodgepodged).to.have.length(1);
-        expect(hodgepodged[0].register).to.be.a.function();
-        expect(hodgepodged[0].register()).to.equal('plain');
-        expect(hodgepodged[0].register.attributes).to.equal({
+        const [
+            { plugin: { register, ...attributes }, options: opts },
+            ...others
+        ] = hodgepodged;
+
+        expect(others).to.have.length(0);
+        expect(opts).to.shallow.equal(options);
+        expect(register()).to.equal('plain');
+        expect(attributes).to.equal({
             name: 'plugin-plain',
             dependencies: []
         });
-
-        done();
     });
 
-    it('consumes a list of plugins using the object format.', (done) => {
+    it('consumes a list of plugins using the { plugin: { plugin }, options } format.', () => {
 
-        expect(pluginPlain.register.attributes.dependencies.hodgepodge).to.equal(true);
+        expect(pluginPlain.dependencies.hodgepodge).to.equal(true);
 
-        const hodgepodged = Hodgepodge.sort([{ register: pluginPlain }]);
+        const options = {};
+        const hodgepodged = Hodgepodge.sort([{ plugin: { plugin: pluginPlain }, options }]);
 
-        expect(hodgepodged).to.have.length(1);
-        expect(hodgepodged[0].register).to.be.a.function();
-        expect(hodgepodged[0].register()).to.equal('plain');
-        expect(hodgepodged[0].register.attributes).to.equal({
+        const [
+            { plugin: { register, ...attributes }, options: opts },
+            ...others
+        ] = hodgepodged;
+
+        expect(others).to.have.length(0);
+        expect(opts).to.shallow.equal(options);
+        expect(register()).to.equal('plain');
+        expect(attributes).to.equal({
             name: 'plugin-plain',
             dependencies: []
         });
-
-        done();
     });
 
-    it('reorders a list of plugins, respecting their dependencies.', (done) => {
+    it('reorders a list of plugins, respecting their dependencies.', () => {
 
         const plugins = [
-            pluginA.register,
+            pluginA,
             {
-                register: pluginB,
+                plugin: pluginB,
                 options: { do: 'something' }
             },
             pluginC,
             {
-                register: pluginE.register,
+                plugin: { plugin: pluginE },
                 options: { do: 'something-else' }
             }
         ];
 
-        const hodgepodged = Hodgepodge.sort(plugins);
+        const [C, B, A, E, ...others] = Hodgepodge.sort(plugins);
 
-        expect(hodgepodged).to.have.length(4);
+        expect(others).to.have.length(0);
 
-        expect(hodgepodged[0].register).to.be.a.function();
-        expect(hodgepodged[0].register()).to.equal('C');
-        expect(hodgepodged[0].register.attributes).to.not.shallow.equal(pluginC.attributes);
-        expect(hodgepodged[0].register.attributes).to.equal({
-            name: 'plugin-c',
-            dependencies: []
+        expect(C).to.equal({
+            plugin: {
+                register: pluginC.register,
+                pkg: { name: 'plugin-c' },
+                dependencies: []
+            }
         });
+
+        expect(C.plugin.register()).to.equal('C');
+        expect(C).to.not.shallow.equal(plugins[2]);
+        expect(C.plugin).to.not.shallow.equal(plugins[2].plugin);
 
         // Not hodgepodging– passthrough
 
-        expect(hodgepodged[1]).to.shallow.equal(plugins[1]);
-        expect(hodgepodged[1].options).to.shallow.equal(plugins[1].options);
-        expect(hodgepodged[1].options).to.equal({ do: 'something' });
-        expect(hodgepodged[1].register).to.shallow.equal(pluginB);
-        expect(hodgepodged[1].register.register.attributes).to.shallow.equal(pluginB.register.attributes);
-        expect(hodgepodged[1].register.register.attributes).to.equal({
-            name: 'plugin-b',
-            dependencies: 'plugin-c'
+        expect(B).to.equal({
+            plugin: {
+                register: pluginB.register,
+                name: 'plugin-b',
+                dependencies: 'plugin-c'
+            },
+            options: { do: 'something' }
         });
+
+        expect(B.plugin.register()).to.equal('B');
+        expect(B).to.shallow.equal(plugins[1]);
+        expect(B.plugin).to.shallow.equal(plugins[1].plugin);
+        expect(B.options).to.shallow.equal(plugins[1].options);
 
         // Not hodgepodging– passthrough
 
-        expect(hodgepodged[2]).to.be.a.function();
-        expect(hodgepodged[2]()).to.equal('A');
-        expect(hodgepodged[2].attributes).to.not.shallow.equal(pluginA.attributes);
-        expect(hodgepodged[2].attributes).to.equal({
+        expect(A).to.equal({
+            register: pluginA.register,
             name: 'plugin-a',
             dependencies: ['plugin-b', 'plugin-c']
         });
 
+        expect(A.register()).to.equal('A');
+        expect(A).to.shallow.equal(plugins[0]);
+
         // Not hodgepodging– passthrough
 
-        expect(hodgepodged[3]).to.shallow.equal(plugins[3]);
-        expect(hodgepodged[3].options).to.shallow.equal(plugins[3].options);
-        expect(hodgepodged[3].options).to.equal({ do: 'something-else' });
-        expect(hodgepodged[3].register).to.shallow.equal(pluginE.register);
-        expect(hodgepodged[3].register.attributes).to.shallow.equal(pluginE.register.attributes);
-        expect(hodgepodged[3].register.attributes).to.equal({
-            name: 'plugin-e'
+        expect(E).to.equal({
+            plugin: {
+                plugin: {
+                    register: pluginE.register,
+                    name: 'plugin-e'
+                }
+            },
+            options: { do: 'something-else' }
         });
 
-        done();
+        expect(E.plugin.plugin.register()).to.equal('E');
+        expect(E).to.shallow.equal(plugins[3]);
+        expect(E.plugin).to.shallow.equal(plugins[3].plugin);
+        expect(E.plugin.plugin).to.shallow.equal(plugins[3].plugin.plugin);
+        expect(E.options).to.shallow.equal(plugins[3].options);
     });
 
-    it('throws on circular dependencies.', (done) => {
+    it('throws on circular dependencies.', () => {
 
-        const wantsOne = { register: () => true };
-        wantsOne.register.attributes = {
+        const wantsOne = {
             name: 'two',
-            dependencies: 'one'
+            dependencies: 'one',
+            register: () => true
         };
 
-        const wantsTwo = { register: () => true };
-        wantsTwo.register.attributes = {
+        const wantsTwo = {
             name: 'one',
-            dependencies: 'two'
+            dependencies: 'two',
+            register: () => true
         };
 
         const hodgepodging = () => {
@@ -251,11 +291,9 @@ describe('Hodgepodge', () => {
         };
 
         expect(hodgepodging).to.throw();
-
-        done();
     });
 
-    it('throws on missing dependencies without loose tally.', (done) => {
+    it('throws on missing dependencies without loose tally.', () => {
 
         const hodgepodging = () => {
 
@@ -263,11 +301,9 @@ describe('Hodgepodge', () => {
         };
 
         expect(hodgepodging).to.throw('Missing dependencies: plugin-c.');
-
-        done();
     });
 
-    it('throws on missing dependencies only of hodgepodged plugins with loose tally.', (done) => {
+    it('throws on missing dependencies only of hodgepodged plugins with loose tally.', () => {
 
         const hodgepodging = () => {
 
@@ -275,11 +311,9 @@ describe('Hodgepodge', () => {
         };
 
         expect(hodgepodging).to.throw('Missing dependencies: plugin-a.');
-
-        done();
     });
 
-    it('does not throw on missing dependencies of non-hodgepodged plugins with loose tally.', (done) => {
+    it('does not throw on missing dependencies of non-hodgepodged plugins with loose tally.', () => {
 
         const hodgepodging = () => {
 
@@ -287,29 +321,22 @@ describe('Hodgepodge', () => {
         };
 
         expect(hodgepodging).to.not.throw();
-
-        done();
     });
 
-    it('hodgepodging plugin causes server.register() to throw unless used with hodgepodge.', (done) => {
+    it('hodgepodging plugin causes server.register() to throw unless used with hodgepodge.', async () => {
 
-        const server = new Hapi.Server();
-        server.connection();
+        const server = Hapi.server();
 
-        const plugin = (srv, opt, next) => next();
-        plugin.attributes = {
+        const plugin = {
             name: 'hodgepodging',
-            dependencies: { hodgepodge: true }
+            dependencies: { hodgepodge: true },
+            register() {}
         };
 
-        expect(() => server.register(plugin, () => true)).to.throw(/^Invalid plugin options/);
+        await expect(server.register(plugin)).to.reject(/^Invalid plugin options/);
 
-        server.register(Hodgepodge.sort(plugin), (err) => {
+        await server.register(Hodgepodge.sort(plugin));
 
-            expect(err).to.not.exist();
-
-            expect(server.registrations.hodgepodging).to.exist();
-            done();
-        });
+        expect(server.registrations.hodgepodging).to.exist();
     });
 });
