@@ -26,7 +26,7 @@ describe('Hodgepodge', () => {
     // Plugin A
 
     const pluginA = {
-        pkg: { name: 'plugin-a' },
+        name: 'plugin-a',
         dependencies: ['plugin-b', 'plugin-c'],
         register: () => 'A'
     };
@@ -42,7 +42,7 @@ describe('Hodgepodge', () => {
     // Plugin C
 
     const pluginC = {
-        name: 'plugin-c',
+        pkg: { name: 'plugin-c' },
         dependencies: { hodgepodge: true },
         register: () => 'C'
     };
@@ -216,7 +216,7 @@ describe('Hodgepodge', () => {
         expect(C).to.equal({
             plugin: {
                 register: pluginC.register,
-                name: 'plugin-c',
+                pkg: { name: 'plugin-c' },
                 dependencies: []
             }
         });
@@ -245,7 +245,7 @@ describe('Hodgepodge', () => {
 
         expect(A).to.equal({
             register: pluginA.register,
-            pkg: { name: 'plugin-a' },
+            name: 'plugin-a',
             dependencies: ['plugin-b', 'plugin-c']
         });
 

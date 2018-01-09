@@ -3,6 +3,9 @@
   "version": "2.0.0",
   "description": "Resolving hapi plugin dependencies since 2015",
   "main": "lib/index.js",
+  "engines": {
+    "node": ">=8.9.0"
+  },
   "directories": {
     "test": "test"
   },
@@ -27,7 +30,7 @@
   },
   "homepage": "https://github.com/devinivy/hodgepodge#readme",
   "dependencies": {
-    "topo": "2.x.x"
+    "topo": "3.x.x"
   },
   "peerDependencies": {
     "hapi": ">=17 <18"
