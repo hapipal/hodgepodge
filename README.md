@@ -9,26 +9,34 @@ Lead Maintainer - [Devin Ivy](https://github.com/devinivy)
 ## Usage
 > See also the [API Reference](API.md)
 
-When you declare dependencies on a hapi plugin, whether by [`server.register()`](http://hapijs.com/api#serverregisterplugins-options-callback) or by the `dependencies` attribute, hapi does not actually defer plugin registration to resolve those dependencies in time.  It just assures that those dependencies exist at the time the server is initialized.  Hodgepodge actually reorders your plugin registrations so that they occur in an order that respects their dependencies, simply by paying attention to their `dependencies` attributes.
+When you declare dependencies on a hapi plugin, whether by [`server.dependency()`](https://github.com/hapijs/hapi/blob/master/API.md#server.dependency()) or by the [`dependencies` plugin property](https://github.com/hapijs/hapi/blob/master/API.md#plugins), hapi does not actually defer plugin registration to resolve those dependencies.  It just assures that those dependencies exist at the time the server is initialized.  Hodgepodge actually reorders your plugin registrations so that they occur in an order that respects their dependencies, simply by paying attention to their `dependencies` attributes.
+
+> **Note**
+>
+> It's suggested to use hodgepodge only when it's really necessary– ideally plugin registration order should not matter.  You may, for example, utilize the [`once` plugin registration option](https://github.com/hapijs/hapi/blob/master/API.md#server.register()) or
+[`once`/`multiple` plugin properties](https://github.com/hapijs/hapi/blob/master/API.md#plugins) so that plugins may simply be registered by every plugin that depends on them.
 
 ```js
 const Hodgepodge = require('hodgepodge');
 
-const plugins = Hodgepodge.sort([
-    pluginA, // pluginA.register.attributes.dependencies === 'pluginB'
-    pluginB
-]);
+(async () => {
 
-// Now plugins looks like [pluginB, pluginA]
-// This ordering respects pluginA's dependency on pluginB
+    const plugins = Hodgepodge.sort([
+        pluginA, // pluginA.dependencies === 'pluginB'
+        pluginB
+    ]);
 
-server.register(plugins, function (err) {/* ... */});
+    // Now plugins looks like [pluginB, pluginA]
+    // This ordering respects pluginA's dependency on pluginB
+
+    await server.register(plugins);
+})();
 ```
 
 ### More
-In a sense this is an alternative to the [`server.dependency(deps, [after])`](http://hapijs.com/api#serverdependencydependencies-after) [pattern](API.md#without-hodgepodge), which some find to be clunky.  In contrast to use of [`server.dependency()`](http://hapijs.com/api#serverdependencydependencies-after)'s `after` callback, dependencies are dealt with at the time of plugin registration rather than during server initialization (during `onPreStart`).
+In a sense this is an alternative to the [`server.dependency(deps, [after])`](https://github.com/hapijs/hapi/blob/master/API.md#server.dependency()) [pattern](API.md#without-hodgepodge), which some find to be clunky.  In contrast to use of `server.dependency()`'s `after` callback, dependencies are dealt with at the time of plugin registration rather than during server initialization (during [`onPreStart`](https://github.com/hapijs/hapi/blob/master/API.md#server.ext())).
 
-Due to this core difference in timing, it may be required that your plugin be registered using hodgepodge to ensure that plugin dependencies are resolved in time for the plugin to be used.  In order to enforce this, wrap your plugin's `attributes.dependencies` in an object with a single property `hodgepodge`.  When hodgepodge passes over your plugin, it will unwrap this property; but if hodgepodge is not used to register your plugin, hapi will fail when it tries to register your plugin because `{ hodgepodge: [] }` is an invalid `dependencies` attribute.  This is by design, in case you want to enforce registration of your plugin using hodgepodge.  If you do this, remember that hodgepodge is then a `peerDependency` of your project!
+Due to this core difference in timing, it may be required that your plugin be registered using hodgepodge to ensure that plugin dependencies are resolved in time for the plugin to be used.  In order to enforce this, wrap your plugin's `dependencies` in an object with a single property `hodgepodge`.  When hodgepodge passes over your plugin, it will unwrap this property; but if hodgepodge is not used to register your plugin, hapi will fail when it tries to register your plugin because `{ hodgepodge: [] }` is an invalid `dependencies` plugin property.  This is by design, in case you want to enforce registration of your plugin using hodgepodge.  If you do this, remember that hodgepodge is then a `peerDependency` of your project!
 
 Hodgepodge throws an exception when there are circular dependencies, or if dependencies will otherwise not be met during registration.
 
