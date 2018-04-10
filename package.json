@@ -15,7 +15,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/devinivy/hodgepodge.git"
+    "url": "git+https://github.com/hapipal/hodgepodge.git"
   },
   "keywords": [
     "hapi",
@@ -26,9 +26,9 @@
   "author": "Devin Ivy <devin@bigroomstudios.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/devinivy/hodgepodge/issues"
+    "url": "https://github.com/hapipal/hodgepodge/issues"
   },
-  "homepage": "https://github.com/devinivy/hodgepodge#readme",
+  "homepage": "https://github.com/hapipal/hodgepodge#readme",
   "dependencies": {
     "topo": "3.x.x"
   },

@@ -2,7 +2,7 @@
 
 Resolving hapi plugin dependencies since 2015
 
-[![Build Status](https://travis-ci.org/devinivy/hodgepodge.svg?branch=master)](https://travis-ci.org/devinivy/hodgepodge) [![Coverage Status](https://coveralls.io/repos/devinivy/hodgepodge/badge.svg?branch=master&service=github)](https://coveralls.io/github/devinivy/hodgepodge?branch=master)
+[![Build Status](https://travis-ci.org/hapipal/hodgepodge.svg?branch=master)](https://travis-ci.org/hapipal/hodgepodge) [![Coverage Status](https://coveralls.io/repos/hapipal/hodgepodge/badge.svg?branch=master&service=github)](https://coveralls.io/github/hapipal/hodgepodge?branch=master)
 
 Lead Maintainer - [Devin Ivy](https://github.com/devinivy)
 
@@ -17,6 +17,8 @@ When you declare dependencies on a hapi plugin, whether by [`server.dependency()
 >
 > It's suggested to use hodgepodge only when it's really necessary– ideally plugin registration order should not matter.  You may, for example, utilize the [`once` plugin registration option](https://github.com/hapijs/hapi/blob/master/API.md#server.register()) or
 [`once`/`multiple` plugin properties](https://github.com/hapijs/hapi/blob/master/API.md#plugins) so that plugins may simply be registered by every other plugin that depends on them.
+>
+> See ["Handling plugin dependencies"](https://hapipal.com/best-practices/handling-plugin-dependencies) for an in-depth look at taming inter-plugin dependencies.
 
 ```js
 const Hodgepodge = require('hodgepodge');
