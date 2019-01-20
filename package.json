@@ -33,7 +33,7 @@
     "topo": "3.x.x"
   },
   "peerDependencies": {
-    "hapi": ">=17 <18"
+    "hapi": ">=17 <19"
   },
   "devDependencies": {
     "code": "5.x.x",
