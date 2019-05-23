@@ -62,8 +62,8 @@ module.exports = {
         server.views(/* ... */);
     },
     name: 'my-plugin',
-    dependencies: ['vision']  // Hodgepodge enforces this dependency when the plugin is registered
-    // dependencies: { hodgepodge: ['vision'] }
+    dependencies: ['@hapi/vision']  // Hodgepodge enforces this dependency when the plugin is registered
+    // dependencies: { hodgepodge: ['@hapi/vision'] }
     // The commented line above would additionally ensure
     // this plugin is registered with hodgepodge (optional)
 };
@@ -80,7 +80,7 @@ module.exports = {
     name: 'my-plugin',
     register(server) {
 
-        server.dependency(['vision'], internals.register(options));
+        server.dependency(['@hapi/vision'], internals.register(options));
     }
 };
 
