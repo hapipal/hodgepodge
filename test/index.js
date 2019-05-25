@@ -2,9 +2,9 @@
 
 // Load modules
 
-const Lab = require('lab');
-const Code = require('code');
-const Hapi = require('hapi');
+const Lab = require('@hapi/lab');
+const Code = require('@hapi/code');
+const Hapi = require('@hapi/hapi');
 const Hodgepodge = require('..');
 
 // Test shortcuts

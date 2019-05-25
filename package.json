@@ -10,7 +10,7 @@
     "test": "test"
   },
   "scripts": {
-    "test": "lab -a code -t 100 -L",
+    "test": "lab -a @hapi/code -t 100 -L",
     "coveralls": "node_modules/.bin/lab -r lcov | node_modules/.bin/coveralls"
   },
   "repository": {
@@ -30,15 +30,15 @@
   },
   "homepage": "https://github.com/hapipal/hodgepodge#readme",
   "dependencies": {
-    "topo": "3.x.x"
+    "@hapi/topo": "3.x.x"
   },
   "peerDependencies": {
-    "hapi": ">=17 <19"
+    "@hapi/hapi": ">=17 <19"
   },
   "devDependencies": {
-    "code": "5.x.x",
-    "coveralls": "3.x.x",
-    "hapi": "18.x.x",
-    "lab": "18.x.x"
+    "@hapi/code": "5.x.x",
+    "@hapi/hapi": "18.x.x",
+    "@hapi/lab": "19.x.x",
+    "coveralls": "3.x.x"
   }
 }
