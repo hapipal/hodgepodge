@@ -4,8 +4,10 @@
 
 const Lab = require('@hapi/lab');
 const Code = require('@hapi/code');
-const Hapi = require('@hapi/hapi');
+const Somever = require('@hapi/somever');
 const Hodgepodge = require('..');
+
+const Hapi = Somever.match(process.version, '>=12') ? require('@hapi/hapi-19') : require('@hapi/hapi');
 
 // Test shortcuts
 

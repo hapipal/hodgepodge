@@ -33,12 +33,14 @@
     "@hapi/topo": "3.x.x"
   },
   "peerDependencies": {
-    "@hapi/hapi": ">=17 <19"
+    "@hapi/hapi": ">=17 <20"
   },
   "devDependencies": {
-    "@hapi/code": "5.x.x",
+    "@hapi/code": "6.x.x",
     "@hapi/hapi": "18.x.x",
-    "@hapi/lab": "19.x.x",
+    "@hapi/hapi-19": "npm:@hapi/hapi@19",
+    "@hapi/lab": "20.x.x",
+    "@hapi/somever": "2.x.x",
     "coveralls": "3.x.x"
   }
 }
