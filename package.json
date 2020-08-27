@@ -10,7 +10,7 @@
     "test": "test"
   },
   "scripts": {
-    "test": "lab -a @hapi/code -t 100 -L",
+    "test": "lab -a @hapi/code -t 100 -L -I \"FinalizationRegistry,WeakRef\"",
     "coveralls": "node_modules/.bin/lab -r lcov | node_modules/.bin/coveralls"
   },
   "repository": {
@@ -33,12 +33,12 @@
     "@hapi/topo": "3.x.x"
   },
   "peerDependencies": {
-    "@hapi/hapi": ">=17 <20"
+    "@hapi/hapi": ">=17 <21"
   },
   "devDependencies": {
     "@hapi/code": "6.x.x",
     "@hapi/hapi": "18.x.x",
-    "@hapi/hapi-19": "npm:@hapi/hapi@19",
+    "@hapi/hapi-20": "npm:@hapi/hapi@20",
     "@hapi/lab": "20.x.x",
     "@hapi/somever": "2.x.x",
     "coveralls": "3.x.x"
