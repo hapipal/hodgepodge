@@ -30,7 +30,7 @@
   },
   "homepage": "https://github.com/hapipal/hodgepodge#readme",
   "dependencies": {
-    "@hapi/topo": "3.x.x"
+    "@hapi/topo": "5.x.x"
   },
   "peerDependencies": {
     "@hapi/hapi": ">=17 <21"
