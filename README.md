@@ -16,7 +16,7 @@ npm install hodgepodge
 >
 > Hodgepodge is intended for use with hapi v19+ and nodejs v12+ (see v3 for lower support).
 >
-> This module is currently under [ad hoc maintenance](https://github.com/hapipal/underdog/issues/17), which means it relies fully on community support.
+> This module is currently under [ad hoc maintenance](https://github.com/hapipal/hodgepodge/issues/11), which means it relies fully on community support.
 
 When you declare dependencies on a hapi plugin, whether by [`server.dependency()`](https://hapi.dev/api/#server.dependency()) or by the [`dependencies` plugin property](https://hapi.dev/api/#plugins), hapi does not actually defer plugin registration to resolve those dependencies.  It just assures that those dependencies exist at the time the server is initialized.  Hodgepodge actually reorders your plugin registrations so that they occur in an order that respects their dependencies, simply by paying attention to their listed `dependencies`.
 
