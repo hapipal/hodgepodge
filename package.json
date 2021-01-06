@@ -1,6 +1,6 @@
 {
   "name": "hodgepodge",
-  "version": "3.3.0",
+  "version": "4.0.0",
   "description": "Resolving hapi plugin dependencies since 2015",
   "main": "lib/index.js",
   "engines": {
