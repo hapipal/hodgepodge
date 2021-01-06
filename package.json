@@ -10,8 +10,8 @@
     "test": "test"
   },
   "scripts": {
-    "test": "lab -a @hapi/code -t 100 -L -I \"FinalizationRegistry,WeakRef\"",
-    "coveralls": "node_modules/.bin/lab -r lcov | node_modules/.bin/coveralls"
+    "test": "lab -a @hapi/code -t 100 -L",
+    "coveralls": "lab -r lcov | coveralls"
   },
   "repository": {
     "type": "git",

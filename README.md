@@ -2,21 +2,28 @@
 
 Resolving hapi plugin dependencies since 2015
 
-[![Build Status](https://travis-ci.org/hapipal/hodgepodge.svg?branch=master)](https://travis-ci.org/hapipal/hodgepodge) [![Coverage Status](https://coveralls.io/repos/hapipal/hodgepodge/badge.svg?branch=master&service=github)](https://coveralls.io/github/hapipal/hodgepodge?branch=master)
+[![Build Status](https://travis-ci.com/hapipal/hodgepodge.svg?branch=master)](https://travis-ci.com/hapipal/hodgepodge) [![Coverage Status](https://coveralls.io/repos/hapipal/hodgepodge/badge.svg?branch=master&service=github)](https://coveralls.io/github/hapipal/hodgepodge?branch=master)
 
 Lead Maintainer - [Devin Ivy](https://github.com/devinivy)
+
+## Installation
+```sh
+npm install hodgepodge
+```
 
 ## Usage
 > See also the [API Reference](API.md)
 >
-> This version of hodgepodge is for **hapi v17+**
+> Hodgepodge is intended for use with hapi v19+ and nodejs v12+ (see v3 for lower support).
+>
+> This module is currently under [ad hoc maintenance](https://github.com/hapipal/underdog/issues/17), which means it relies fully on community support.
 
-When you declare dependencies on a hapi plugin, whether by [`server.dependency()`](https://github.com/hapijs/hapi/blob/master/API.md#server.dependency()) or by the [`dependencies` plugin property](https://github.com/hapijs/hapi/blob/master/API.md#plugins), hapi does not actually defer plugin registration to resolve those dependencies.  It just assures that those dependencies exist at the time the server is initialized.  Hodgepodge actually reorders your plugin registrations so that they occur in an order that respects their dependencies, simply by paying attention to their listed `dependencies`.
+When you declare dependencies on a hapi plugin, whether by [`server.dependency()`](https://hapi.dev/api/#server.dependency()) or by the [`dependencies` plugin property](https://hapi.dev/api/#plugins), hapi does not actually defer plugin registration to resolve those dependencies.  It just assures that those dependencies exist at the time the server is initialized.  Hodgepodge actually reorders your plugin registrations so that they occur in an order that respects their dependencies, simply by paying attention to their listed `dependencies`.
 
 > **Note**
 >
-> It's suggested to use hodgepodge only when it's really necessary– ideally plugin registration order should not matter.  You may, for example, utilize the [`once` plugin registration option](https://github.com/hapijs/hapi/blob/master/API.md#server.register()) or
-[`once`/`multiple` plugin properties](https://github.com/hapijs/hapi/blob/master/API.md#plugins) so that plugins may simply be registered by every other plugin that depends on them.
+> It's suggested to use hodgepodge only when it's really necessary– ideally plugin registration order should not matter.  You may, for example, utilize the [`once` plugin registration option](https://hapi.dev/api/#server.register()) or
+[`once`/`multiple` plugin properties](https://hapi.dev/api/#plugins) so that plugins may simply be registered by every other plugin that depends on them.
 >
 > See ["Handling plugin dependencies"](https://hapipal.com/best-practices/handling-plugin-dependencies) for an in-depth look at taming inter-plugin dependencies.
 
@@ -38,7 +45,7 @@ const Hodgepodge = require('hodgepodge');
 ```
 
 ### More
-In a sense this is an alternative to the [`server.dependency(deps, [after])`](https://github.com/hapijs/hapi/blob/master/API.md#server.dependency()) [pattern](API.md#without-hodgepodge), which some find to be clunky.  In contrast to use of `server.dependency()`'s `after` callback, dependencies are dealt with at the time of plugin registration rather than during server initialization (during [`onPreStart`](https://github.com/hapijs/hapi/blob/master/API.md#server.ext())).
+In a sense this is an alternative to the [`server.dependency(deps, [after])`](https://hapi.dev/api/#server.dependency()) [pattern](API.md#without-hodgepodge), which some find to be clunky.  In contrast to use of `server.dependency()`'s `after` callback, dependencies are dealt with at the time of plugin registration rather than during server initialization (during [`onPreStart`](https://hapi.dev/api/#server.ext())).
 
 Due to this core difference in timing, it may be required that your plugin be registered using hodgepodge to ensure that plugin dependencies are resolved in time for the plugin to be used.  In order to enforce this, wrap your plugin's `dependencies` in an object with a single property `hodgepodge`.  When hodgepodge passes over your plugin, it will unwrap this property; but if hodgepodge is not used to register your plugin, hapi will fail when it tries to register your plugin because `{ hodgepodge: [] }` is an invalid `dependencies` plugin property.  This is by design, in case you want to enforce registration of your plugin using hodgepodge.  If you do this, remember that hodgepodge is then a `peerDependency` of your project!
 

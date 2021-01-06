@@ -1,13 +1,19 @@
-# API Reference
+# API
+Resolving hapi plugin dependencies since 2015
 
-## Interface
+> **Note**
+>
+> Hodgepodge is intended for use with hapi v19+ and nodejs v12+ (see v3 for lower support).
+>
+> This module is currently under [ad hoc maintenance](https://github.com/hapipal/hodgepodge/issues/11), which means it relies fully on community support.
 
+## `Hodgepodge`
 ### `Hodgepodge.sort(plugins, [looseTally])`
-A function that returns an array of reordered hapi `plugins` to respect their [`dependencies` properties](https://github.com/hapijs/hapi/blob/master/API.md#plugins),
-  - `plugins` - a mixed value, typically a mixed array, of hapi plugin registrations as would be passed to [`server.register()`](https://github.com/hapijs/hapi/blob/master/API.md#server.register()).  This argument permissively accepts all values so that hapi can handle plugin formatting errors.
+A function that returns an array of reordered hapi `plugins` to respect their [`dependencies` properties](https://hapi.dev/api/#plugins),
+  - `plugins` - a mixed value, typically a mixed array, of hapi plugin registrations as would be passed to [`server.register()`](https://hapi.dev/api/#server.register()).  This argument permissively accepts all values so that hapi can handle plugin formatting errors.
   - `looseTally` - a boolean value defaulting to `false` that, when `true`, only requires that hapi plugins with a `dependencies.hodgepodge` property present have their dependencies fully satisfied in the list of `plugins`.  This may be desirable when plugins without `dependencies.hodgepodge` have had their dependencies satisfied from prior plugin registrations or otherwise do not want to rely on hodgepodge for dependency resolution.  The name of the option refers to keeping a "loose tally" of missing dependencies.
 
-`Hodgepodge.sort()` will unwrap the [`dependencies` property](https://github.com/hapijs/hapi/blob/master/API.md#plugins) of all plugins in the `plugins` list that wrap their dependencies using `dependencies.hodgepodge`.  This can be leveraged in a plugin to require that hodgepodge be used to register it; otherwise vanilla plugin registration would fail since `{ hodgepodge: [] }` is not a valid plugin `dependencies` value.  For example, a plugin as such,
+`Hodgepodge.sort()` will unwrap the [`dependencies` property](https://hapi.dev/api/#plugins) of all plugins in the `plugins` list that wrap their dependencies using `dependencies.hodgepodge`.  This can be leveraged in a plugin to require that hodgepodge be used to register it; otherwise vanilla plugin registration would fail since `{ hodgepodge: [] }` is not a valid plugin `dependencies` value.  For example, a plugin as such,
 ```js
 const plugin = {
     register() {/* ... */},
@@ -31,7 +37,7 @@ const plugin = {
 ## Examples
 
 ### Registering plugins
-Hodgepodge accepts and understands any plugin registration format that you would normally pass to [`server.register()`](https://github.com/hapijs/hapi/blob/master/API.md#server.register()).  It returns an array of the reordered plugin registrations.
+Hodgepodge accepts and understands any plugin registration format that you would normally pass to [`server.register()`](https://hapi.dev/api/#server.register()).  It returns an array of the reordered plugin registrations.
 ```js
 const Hodgepodge = require('hodgepodge');
 
@@ -70,7 +76,7 @@ module.exports = {
 ```
 
 #### Without hodgepodge
-Here's what the clunkier (but steadfast!) [`server.dependency(deps, [after])`](https://github.com/hapijs/hapi/blob/master/API.md#server.dependency()) pattern looks like,
+Here's what the clunkier (but steadfast!) [`server.dependency(deps, [after])`](https://hapi.dev/api/#server.dependency()) pattern looks like,
 ```js
 // Life without hodgepodge
 
