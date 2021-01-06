@@ -4,7 +4,7 @@
   "description": "Resolving hapi plugin dependencies since 2015",
   "main": "lib/index.js",
   "engines": {
-    "node": ">=8.9.0"
+    "node": ">=12"
   },
   "directories": {
     "test": "test"
@@ -30,17 +30,15 @@
   },
   "homepage": "https://github.com/hapipal/hodgepodge#readme",
   "dependencies": {
-    "@hapi/topo": "3.x.x"
+    "@hapi/topo": "5.x.x"
   },
   "peerDependencies": {
-    "@hapi/hapi": ">=17 <21"
+    "@hapi/hapi": ">=19 <21"
   },
   "devDependencies": {
-    "@hapi/code": "6.x.x",
-    "@hapi/hapi": "18.x.x",
-    "@hapi/hapi-20": "npm:@hapi/hapi@20",
-    "@hapi/lab": "20.x.x",
-    "@hapi/somever": "2.x.x",
+    "@hapi/code": "8.x.x",
+    "@hapi/hapi": "20.x.x",
+    "@hapi/lab": "24.x.x",
     "coveralls": "3.x.x"
   }
 }
